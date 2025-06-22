@@ -77,10 +77,9 @@ choose_platform() {
   "$SCRIPT"
 }
 
-# 主程式開始
 cd "$(dirname "$0")"
 
-# 只在第一次運行時顯示初始化進度條
+# 只在第一次執行時初始化
 if [[ ! -f "$INIT_FLAG" ]]; then
   init_loading
 fi
