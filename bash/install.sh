@@ -3,18 +3,24 @@
 INIT_FLAG=".delux_init_done"
 LOCAL_VERSION_FILE=".delux_version"
 REMOTE_VERSION_URL="https://raw.githubusercontent.com/xStrikea/delux/refs/heads/main/bash/version.txt"
-LOCAL_VERSION="0.3-beta"
+DEFAULT_LOCAL_VERSION="0.3-alpha"
 
-# 設定本地版本（第一次使用時）
-if [[ ! -f "$LOCAL_VERSION_FILE" ]]; then
-  echo "$LOCAL_VERSION" > "$LOCAL_VERSION_FILE"
-fi
+# 讀取本地版本並剝除多餘字元
+function read_local_version() {
+  if [[ -f "$LOCAL_VERSION_FILE" ]]; then
+    cat "$LOCAL_VERSION_FILE" | tr -d '\r\n %'
+  else
+    echo "$DEFAULT_LOCAL_VERSION"
+  fi
+}
+
+LOCAL_VERSION=$(read_local_version)
 
 function check_update() {
   if command -v curl &> /dev/null; then
-    REMOTE_VERSION=$(curl -s "$REMOTE_VERSION_URL" | tr -d '\r')
+    REMOTE_VERSION=$(curl -s "$REMOTE_VERSION_URL" | tr -d '\r\n %')
 
-    if [[ -n "$REMOTE_VERSION" && "$REMOTE_VERSION" != "$(cat $LOCAL_VERSION_FILE)" ]]; then
+    if [[ -n "$REMOTE_VERSION" && "$REMOTE_VERSION" != "$LOCAL_VERSION" ]]; then
       UPDATE_MSG="🔔 New version available: v$REMOTE_VERSION"
       UPDATE_AVAILABLE=1
     else

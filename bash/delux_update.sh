@@ -9,7 +9,7 @@ if git pull origin main; then
   echo "✅ Repository updated successfully."
 
   if command -v curl &> /dev/null; then
-    REMOTE_VERSION=$(curl -s "$REMOTE_VERSION_URL" | tr -d '\r')
+    REMOTE_VERSION=$(curl -s "$REMOTE_VERSION_URL" | tr -d '\r\n %')
     if [[ -n "$REMOTE_VERSION" ]]; then
       echo "$REMOTE_VERSION" > "$LOCAL_VERSION_FILE"
       echo "📦 Updated to version: $REMOTE_VERSION"
