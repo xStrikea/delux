@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-DEFAULT_LOCAL_VERSION="0.3.3"
+DEFAULT_LOCAL_VERSION="0.3.4"
 LOCAL_VERSION_FILE=".delux_version"
 INIT_FLAG=".delux_init_done"
 
