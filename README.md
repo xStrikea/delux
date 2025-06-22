@@ -107,5 +107,5 @@ delux_ssh.sh
 ---
 
 <p align="center">
-V0.3
+Minimum version Bash 3.0 
 </p>
