@@ -1,7 +1,30 @@
 #!/usr/bin/env bash
 
 INIT_FLAG=".delux_init_done"
-）
+LOCAL_VERSION_FILE=".delux_version"
+REMOTE_VERSION_URL="https://raw.githubusercontent.com/xStrikea/delux/main/version.txt"
+
+# 初始化版本
+LOCAL_VERSION="0.2"
+if [[ ! -f "$LOCAL_VERSION_FILE" ]]; then
+  echo "$LOCAL_VERSION" > "$LOCAL_VERSION_FILE"
+fi
+
+function check_update() {
+  if command -v curl &> /dev/null; then
+    REMOTE_VERSION=$(curl -s "$REMOTE_VERSION_URL" | tr -d '\r')
+
+    if [[ "$REMOTE_VERSION" != "$(cat $LOCAL_VERSION_FILE)" ]]; then
+      UPDATE_MSG="🔔 New version available: v$REMOTE_VERSION"
+    else
+      UPDATE_MSG="✔ You are using the latest version: v$LOCAL_VERSION"
+    fi
+  else
+    UPDATE_MSG="ℹ️ Could not check for updates (curl not installed)"
+  fi
+}
+
+# 初始化畫面（僅第一次）
 function init_loading() {
   {
     echo "10" ; echo "Checking dialog..."
@@ -29,15 +52,21 @@ function init_loading() {
   touch "$INIT_FLAG"
 }
 
+# 切換到 script 所在目錄（bash/）
 cd "$(dirname "$0")"
 
+# 檢查更新
+check_update
+
+# 執行初始化（僅一次）
 if [[ ! -f "$INIT_FLAG" ]]; then
   init_loading
 fi
 
+# 顯示選單
 CHOICE=$(dialog --clear \
   --title "Delux Installer" \
-  --menu "Choose your platform:" 12 50 4 \
+  --menu "$UPDATE_MSG\nChoose your platform:" 12 60 4 \
   1 "macOS" \
   2 "Linux" \
   3 "Termux (Android)" \
