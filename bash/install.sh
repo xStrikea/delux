@@ -2,6 +2,7 @@
 
 DEFAULT_LOCAL_VERSION="0.3.3"
 LOCAL_VERSION_FILE=".delux_version"
+INIT_FLAG=".delux_init_done"
 
 # 讀取本地版本
 read_local_version() {
@@ -12,7 +13,7 @@ read_local_version() {
   fi
 }
 
-# 初始化畫面
+# 初始化畫面（只跑一次）
 init_loading() {
   {
     echo "10"; echo "Checking dialog..."
@@ -36,6 +37,8 @@ init_loading() {
     echo "100"; echo "Initialization complete."
     sleep 1
   } | dialog --title "Delux Installer - Version $(read_local_version)" --gauge "Initializing, please wait..." 10 60 0
+
+  touch "$INIT_FLAG"
 }
 
 # 選擇平台並執行對應腳本
@@ -76,5 +79,10 @@ choose_platform() {
 
 # 主程式開始
 cd "$(dirname "$0")"
-init_loading
+
+# 只在第一次運行時顯示初始化進度條
+if [[ ! -f "$INIT_FLAG" ]]; then
+  init_loading
+fi
+
 choose_platform
