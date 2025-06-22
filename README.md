@@ -55,23 +55,23 @@ Linux
 ```bash
 git clone https://github.com/xStrikea/delux.git
 cd delux/bash
-chmod +x delux_linux.sh
-./delux_linux.sh
+chmod +x install.sh
+./install.sh
 ```
 macOS
 ```bash
 git clone https://github.com/xStrikea/delux.git
 cd delux/bash
-chmod +x delux_mac.sh
-./delux_mac.sh
+chmod +x install.sh
+./install.sh
 ```
 Termux
 ```bash
 git clone https://github.com/xStrikea/delux.git
 cd delux/bash
-chmod +x delux_termux.sh
-./delux_termux.sh
+chmod +x install.sh
+./install.sh
 ```
 <p align="center">
-V0.1ᴬˡᵖʰᵃ
+V0.2ᴮᵉᵗᵃ
 </p>
