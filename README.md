@@ -1,6 +1,55 @@
 <p align="center">
   <img src="image/logo.png" alt="logo"/>
-</p>  
-Supported OS  
-  <img src="https://img.shields.io/badge/Linux-blue" alt="Linux"/><img src="https://img.shields.io/badge/Mac-blue" alt="Mac"/><img src="https://img.shields.io/badge/Termux-blue" alt="Termux"/>
- ---  
+</p>
+
+# 🧾 Delux Terminal File Manager
+
+**Delux** is a lightweight, terminal-based file manager that runs on `dialog`. It supports interactive folder navigation, file operations, and script execution – all within a simple TUI (text user interface).
+
+---
+
+## ✅ Features
+
+- 📁 Navigate folders (with hidden files support)
+- 📝 Edit, delete, or rename any file
+- 🖼️ Media files: delete or rename
+- 🧨 Executables: confirm before deleting
+- 🐚 `.sh` shell scripts: auto `chmod +x` + execute on `Open`
+- 🔙 Return to parent folder with `Go back`
+
+---
+
+## 💻 Supported OS
+
+| OS         | Supported | Notes                         |
+|------------|-----------|-------------------------------|
+| 🐧 Linux    | ✅        | Works on most distributions   |
+| 🍎 macOS    | ✅        | Requires [Homebrew](https://brew.sh/) for `dialog` |
+| 📱 Termux   | ✅        | Fully compatible on Android   |
+
+---
+
+## 📦 Installation
+
+### 1. Install Dependencies
+
+#### Linux (Debian/Ubuntu)
+```bash
+sudo apt install dialog
+```
+#### macOS (via Homebrew)
+```bash
+brew install dialog
+```
+#### Termux
+```bash
+pkg install dialog
+```
+
+## ⚙️ Clone and Run
+```bash
+git clone https://github.com/xStrikea/delux.git
+cd delux
+chmod +x delux.sh
+./delux.sh
+```
