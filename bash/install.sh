@@ -3,7 +3,7 @@
 INIT_FLAG=".delux_init_done"
 LOCAL_VERSION_FILE=".delux_version"
 REMOTE_VERSION_URL="https://raw.githubusercontent.com/xStrikea/delux/refs/heads/main/bash/version.txt"
-DEFAULT_LOCAL_VERSION="0.3"
+DEFAULT_LOCAL_VERSION="0.3.1"
 
 # 讀取版本
 function read_local_version() {
