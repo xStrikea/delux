@@ -47,9 +47,24 @@ pkg install dialog
 ```
 
 ## ⚙️ Clone and Run
+#### Linux
 ```bash
 git clone https://github.com/xStrikea/delux.git
-cd delux
-chmod +x delux.sh
-./delux.sh
+cd delux/bash
+chmod +x delux_linux.sh
+./delux_linux.sh
+```
+#### MacOS
+```bash
+git clone https://github.com/xStrikea/delux.git
+cd delux/bash
+chmod +x delux_mac.sh
+./delux_mac.sh
+```
+#### Termux
+```bash
+git clone https://github.com/xStrikea/delux.git
+cd delux/bash
+chmod +x delux_termux.sh
+./delux_termux.sh
 ```
