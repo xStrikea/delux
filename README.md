@@ -38,15 +38,15 @@ It supports interactive folder navigation, file operations, and script execution
 
 #### Linux (Debian/Ubuntu)
 ```bash
-sudo apt install dialog
+sudo apt install dialog git
 ```
 macOS (via Homebrew)
 ```bash
-brew install dialog
+brew install dialog git
 ```
 Termux
 ```bash
-pkg install dialog
+pkg install dialog git
 ```
 
 ---
@@ -68,6 +68,19 @@ You can delete .delux_init_done to re-run the intro.
 Execute the following command.
 ```bash
 cd
+cd delux/bash
+chmod +x install.sh
+./install.sh
+```
+
+---
+
+## ⬆️ update
+Execute the following command.
+```bash
+cd
+rm -rf delux
+git clone https://github.com/xStrikea/delux.git
 cd delux/bash
 chmod +x install.sh
 ./install.sh
