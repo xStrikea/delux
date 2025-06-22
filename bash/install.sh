@@ -3,7 +3,7 @@
 INIT_FLAG=".delux_init_done"
 LOCAL_VERSION_FILE=".delux_version"
 REMOTE_VERSION_URL="https://raw.githubusercontent.com/xStrikea/delux/refs/heads/main/bash/version.txt"
-LOCAL_VERSION="0.3"
+LOCAL_VERSION="0.3-beta"
 
 # 設定本地版本（第一次使用時）
 if [[ ! -f "$LOCAL_VERSION_FILE" ]]; then
