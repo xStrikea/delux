@@ -59,8 +59,8 @@ chmod +x install.sh
 ./install.sh
 ```
 > ℹ️ After first run, install.sh remembers the initialization and skips it on next run.
-You can delete .delux_init_done to re-run the intro.
-> 🔧 A bug was found and the title version was not updated after the update.(Fixed!)
+You can delete .delux_init_done to re-run the intro.  
+> 🔧 A bug was found and the title version was not updated after the update.(Fixed!)  
 ---
 
 🧠 Notes
