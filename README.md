@@ -68,3 +68,4 @@ cd delux/bash
 chmod +x delux_termux.sh
 ./delux_termux.sh
 ```
+V<small>0.1-alpha</small>
