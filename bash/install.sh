@@ -1,17 +1,11 @@
 #!/usr/bin/env bash
 
-# 本地版本檔案名稱
-LOCAL_VERSION_FILE=".delux_version"
-# 預設本地版本號（當無本地版本檔時使用）
 DEFAULT_LOCAL_VERSION="0.3.2"
-
-# 遠端版本檔案網址
+LOCAL_VERSION_FILE=".delux_version"
 REMOTE_VERSION_URL="https://raw.githubusercontent.com/xStrikea/delux/refs/heads/main/bash/version.txt"
-
-# 初始化標記檔
 INIT_FLAG=".delux_init_done"
 
-# 讀取本地版本，如果沒檔案回傳預設版本號
+# 讀本地版本
 function read_local_version() {
   if [[ -f "$LOCAL_VERSION_FILE" ]]; then
     cat "$LOCAL_VERSION_FILE" | tr -d '\r\n %'
@@ -20,7 +14,7 @@ function read_local_version() {
   fi
 }
 
-# 初始化畫面（用 dialog 顯示）
+# 初始化畫面
 function init_loading() {
   {
     echo "10"; echo "Checking dialog..."
@@ -48,7 +42,7 @@ function init_loading() {
   touch "$INIT_FLAG"
 }
 
-# 檢查遠端版本是否有更新
+# 檢查更新
 function check_update() {
   LOCAL_VERSION=$(read_local_version)
   UPDATE_AVAILABLE=0
@@ -63,20 +57,15 @@ function check_update() {
   fi
 }
 
-# 更新 Delux：刪除原 bash 目錄後重新 clone，並更新版本號
+# 更新
 function update_now() {
   echo "🚀 Updating Delux..."
 
-  # 移除舊的 bash 目錄
   rm -rf delux/bash
-
-  # 重新 clone 只取 bash 目錄 (用 --depth 1 節省時間)
   git clone --depth 1 https://github.com/xStrikea/delux.git
 
   if [[ -d "delux/bash" ]]; then
     echo "✅ Clone completed."
-
-    # 更新版本號檔案
     if command -v curl &> /dev/null; then
       REMOTE_VERSION=$(curl -s "$REMOTE_VERSION_URL" | tr -d '\r\n %')
       if [[ -n "$REMOTE_VERSION" ]]; then
@@ -84,7 +73,6 @@ function update_now() {
         echo "📦 Updated to version: $REMOTE_VERSION"
       fi
     fi
-
     dialog --msgbox "✅ Updated to version $REMOTE_VERSION.\nYou may now select your platform again." 8 50
   else
     dialog --msgbox "❌ Failed to clone repository. Update aborted." 8 50
@@ -92,16 +80,35 @@ function update_now() {
   fi
 }
 
-# 主腳本開始
+# 顯示 info（作者、版本、GNU GPL 授權）
+function show_info() {
+  local local_version
+  local_version=$(read_local_version)
+
+  dialog --backtitle "Delux Info" --title "About Delux Terminal File Manager" --msgbox "
+🧾 Delux Terminal File Manager
+Author: xStrikea
+Version: $local_version
+
+License: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+
+© 2007 Free Software Foundation, Inc.
+
+You are permitted to copy and distribute verbatim copies of this license document, but changing it is not allowed.
+
+For full license text, see:
+https://www.gnu.org/licenses/gpl-3.0.en.html
+" 18 70
+}
 
 cd "$(dirname "$0")"
-
 [[ ! -f "$INIT_FLAG" ]] && init_loading
 
 while true; do
   check_update
 
   OPTIONS=(
+    0 "Info"
     1 "macOS"
     2 "Linux"
     3 "Termux (Android)"
@@ -114,13 +121,14 @@ while true; do
 
   CHOICE=$(dialog --clear \
     --title "Delux Installer" \
-    --menu "${UPDATE_MSG}\nChoose your platform:" 14 60 6 \
+    --menu "${UPDATE_MSG}\nChoose your platform:" 16 70 7 \
     "${OPTIONS[@]}" \
     3>&1 1>&2 2>&3)
 
   clear
 
   case "$CHOICE" in
+    0) show_info; continue ;;
     1) SCRIPT="./delux_mac.sh" ;;
     2) SCRIPT="./delux_linux.sh" ;;
     3) SCRIPT="./delux_termux.sh" ;;
