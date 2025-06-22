@@ -1,86 +1,115 @@
 #!/usr/bin/env bash
 
-VERSION="0.3"
 AUTHOR="xStrikea"
-LICENSE_FILE="LICENSE.txt"
+VERSION="0.3.4"
+GPL_INFO="GNU GENERAL PUBLIC LICENSE v3 (see README or LICENSE file)"
 
-show_info() {
-  dialog --msgbox "Delux Terminal File Manager\n\nAuthor: $AUTHOR\nVersion: $VERSION\n\nLicense: GNU General Public License v3.0\n\nVisit: https://fsf.org/" 12 60
-}
+LAST_DIR_FILE="$HOME/.delux_last_dir"
 
-show_progress_delete() {
-  (for i in {1..100}; do echo $i; sleep 0.005; done) | \
-    dialog --gauge "Deleting file..." 8 40 0
-}
-
-browse_folder() {
-  local folder="$1"
-  while true; do
-    cd "$folder" || exit 1
-
-    local options=()
-    options+=(".." "Go back")
-    options+=("INFO" "About Delux")
-
-    for item in .* *; do
-      [[ "$item" == "." || "$item" == ".." ]] && continue
-      options+=("$item" "")
-    done
-
-    choice=$(dialog --clear --title "Delux File Manager (SSH)" \
-      --menu "Browsing: $folder" 20 60 14 \
-      "${options[@]}" \
-      3>&1 1>&2 2>&3)
-
-    [ $? -ne 0 ] && break
-
-    case "$choice" in
-      "..")
-        cd ..
-        folder=$(pwd)
-        ;;
-      "INFO")
-        show_info
-        ;;
-      *)
-        if [ -d "$choice" ]; then
-          folder="$folder/$choice"
-        else
-          action=$(dialog --title "$choice" \
-            --menu "Choose an action:" 15 50 5 \
-            1 "Open (edit or execute)" \
-            2 "Rename" \
-            3 "Delete" \
-            4 "Cancel" \
-            3>&1 1>&2 2>&3)
-
-          case "$action" in
-            1)
-              if [[ "$choice" == *.sh ]]; then
-                chmod +x "$choice"
-                bash "$choice"
-              else
-                dialog --textbox "$choice" 20 60
-              fi
-              ;;
-            2)
-              new_name=$(dialog --inputbox "Enter new name:" 8 40 "$choice" 3>&1 1>&2 2>&3)
-              [ -n "$new_name" ] && mv "$choice" "$new_name"
-              ;;
-            3)
-              show_progress_delete
-              rm -rf "$choice"
-              ;;
-          esac
-        fi
-        ;;
-    esac
-  done
-}
-
-if ! command -v dialog &> /dev/null; then
-  echo "❌ 'dialog' is not installed."
-  exit 1
+if [[ -f "$LAST_DIR_FILE" ]]; then
+  CURRENT_DIR=$(cat "$LAST_DIR_FILE")
+  [[ ! -d "$CURRENT_DIR" ]] && CURRENT_DIR="$HOME"
+else
+  CURRENT_DIR="$HOME"
 fi
 
-browse_folder "$(pwd)"
+function show_info() {
+  clear
+  echo "Author: $AUTHOR"
+  echo "Version: $VERSION"
+  echo
+  echo "$GPL_INFO"
+  echo
+  read -rp "Press Enter to continue..."
+}
+
+function browse_dir() {
+  while true; do
+    clear
+    echo "Delux - Browsing: $CURRENT_DIR"
+    echo "-----------------------------------------"
+    echo "0) .. (Go Back)"
+    echo "i) Info"
+    echo
+
+    mapfile -t FILES < <(find "$CURRENT_DIR" -maxdepth 1 -mindepth 1 | sort)
+    local index=1
+    declare -A FILEMAP=()
+    for f in "${FILES[@]}"; do
+      basefile=$(basename "$f")
+      echo "$index) $basefile"
+      FILEMAP[$index]="$f"
+      ((index++))
+    done
+
+    echo
+    read -rp "Select file/folder (q to quit): " choice
+
+    if [[ "$choice" == "q" ]]; then
+      break
+    elif [[ "$choice" == "0" ]]; then
+      CURRENT_DIR=$(dirname "$CURRENT_DIR")
+      [[ -z "$CURRENT_DIR" ]] && CURRENT_DIR="/"
+    elif [[ "$choice" == "i" ]]; then
+      show_info
+    elif [[ "$choice" =~ ^[0-9]+$ ]] && [[ -n "${FILEMAP[$choice]}" ]]; then
+      selected="${FILEMAP[$choice]}"
+      if [[ -d "$selected" ]]; then
+        CURRENT_DIR="$selected"
+      else
+        file_action "$selected"
+      fi
+    else
+      echo "Invalid choice."
+      sleep 1
+    fi
+  done
+  echo "$CURRENT_DIR" > "$LAST_DIR_FILE"
+}
+
+function file_action() {
+  local file="$1"
+  local basefile=$(basename "$file")
+
+  echo "File: $basefile"
+  echo "1) Delete"
+  echo "2) Rename"
+  echo "3) Execute (if executable)"
+  echo "4) Cancel"
+  read -rp "Choose action: " action
+
+  case "$action" in
+    1)
+      read -rp "Are you sure to delete $basefile? (y/N): " confirm
+      if [[ "$confirm" =~ ^[Yy]$ ]]; then
+        rm -rf "$file"
+        echo "$basefile deleted."
+        read -rp "Press Enter to continue..."
+      fi
+      ;;
+    2)
+      read -rp "Enter new name for $basefile: " newname
+      if [[ -z "$newname" ]]; then
+        echo "Rename cancelled."
+      elif [[ -e "$(dirname "$file")/$newname" ]]; then
+        echo "File $newname already exists!"
+      else
+        mv "$file" "$(dirname "$file")/$newname"
+        echo "Renamed to $newname."
+      fi
+      read -rp "Press Enter to continue..."
+      ;;
+    3)
+      if [[ -x "$file" ]]; then
+        "$file"
+      else
+        echo "File is not executable."
+        read -rp "Press Enter to continue..."
+      fi
+      ;;
+    *)
+      ;;
+  esac
+}
+
+browse_dir
