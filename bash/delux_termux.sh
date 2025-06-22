@@ -12,7 +12,7 @@ function list_items() {
     CHOICES+=("$name" "")
   done
 
-  dialog --title "File Manager - $CURRENT_DIR" \
+  dialog --title "delux - $CURRENT_DIR" \
          --menu "Select a file or folder:" 20 60 15 \
          "${CHOICES[@]}" 2>choice.txt
 
