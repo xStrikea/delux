@@ -2,10 +2,10 @@
 
 INIT_FLAG=".delux_init_done"
 LOCAL_VERSION_FILE=".delux_version"
-REMOTE_VERSION_URL="https://raw.githubusercontent.com/xStrikea/delux/main/version.txt"
-
-# 初始化版本
+REMOTE_VERSION_URL="https://raw.githubusercontent.com/xStrikea/delux/refs/heads/main/bash/version.txt"
 LOCAL_VERSION="0.2"
+
+# 設定本地版本（第一次使用時）
 if [[ ! -f "$LOCAL_VERSION_FILE" ]]; then
   echo "$LOCAL_VERSION" > "$LOCAL_VERSION_FILE"
 fi
@@ -14,17 +14,19 @@ function check_update() {
   if command -v curl &> /dev/null; then
     REMOTE_VERSION=$(curl -s "$REMOTE_VERSION_URL" | tr -d '\r')
 
-    if [[ "$REMOTE_VERSION" != "$(cat $LOCAL_VERSION_FILE)" ]]; then
+    if [[ -n "$REMOTE_VERSION" && "$REMOTE_VERSION" != "$(cat $LOCAL_VERSION_FILE)" ]]; then
       UPDATE_MSG="🔔 New version available: v$REMOTE_VERSION"
+      UPDATE_AVAILABLE=1
     else
       UPDATE_MSG="✔ You are using the latest version: v$LOCAL_VERSION"
+      UPDATE_AVAILABLE=0
     fi
   else
     UPDATE_MSG="ℹ️ Could not check for updates (curl not installed)"
+    UPDATE_AVAILABLE=0
   fi
 }
 
-# 初始化畫面（僅第一次）
 function init_loading() {
   {
     echo "10" ; echo "Checking dialog..."
@@ -52,25 +54,38 @@ function init_loading() {
   touch "$INIT_FLAG"
 }
 
-# 切換到 script 所在目錄（bash/）
+function update_now() {
+  echo "🚀 Updating repository..."
+  git pull origin main
+
+  # 重新取得遠端版本
+  REMOTE_VERSION=$(curl -s "$REMOTE_VERSION_URL" | tr -d '\r')
+  if [[ -n "$REMOTE_VERSION" ]]; then
+    echo "$REMOTE_VERSION" > "$LOCAL_VERSION_FILE"
+  fi
+  echo "✅ Update complete. Please run ./install.sh again."
+  exit 0
+}
+
 cd "$(dirname "$0")"
-
-# 檢查更新
 check_update
+[[ ! -f "$INIT_FLAG" ]] && init_loading
 
-# 執行初始化（僅一次）
-if [[ ! -f "$INIT_FLAG" ]]; then
-  init_loading
+OPTIONS=(
+  1 "macOS"
+  2 "Linux"
+  3 "Termux (Android)"
+  4 "SSH (Remote Login)"
+)
+
+if [[ $UPDATE_AVAILABLE -eq 1 ]]; then
+  OPTIONS+=(5 "Update Now")
 fi
 
-# 顯示選單
 CHOICE=$(dialog --clear \
-  --title "Delux Installer" \
-  --menu "$UPDATE_MSG\nChoose your platform:" 12 60 4 \
-  1 "macOS" \
-  2 "Linux" \
-  3 "Termux (Android)" \
-  4 "SSH (Remote Login)" \
+  --title "Delux Installer v$LOCAL_VERSION" \
+  --menu "$UPDATE_MSG\nChoose your platform:" 14 60 6 \
+  "${OPTIONS[@]}" \
   3>&1 1>&2 2>&3)
 
 clear
@@ -80,6 +95,7 @@ case "$CHOICE" in
   2) SCRIPT="./delux_linux.sh" ;;
   3) SCRIPT="./delux_termux.sh" ;;
   4) SCRIPT="./delux_ssh.sh" ;;
+  5) update_now ;;
   *) echo "❌ Invalid selection."; exit 1 ;;
 esac
 
