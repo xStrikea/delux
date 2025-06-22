@@ -3,7 +3,7 @@
 INIT_FLAG=".delux_init_done"
 LOCAL_VERSION_FILE=".delux_version"
 REMOTE_VERSION_URL="https://raw.githubusercontent.com/xStrikea/delux/refs/heads/main/bash/version.txt"
-LOCAL_VERSION="0.2"
+LOCAL_VERSION="0.3"
 
 # 設定本地版本（第一次使用時）
 if [[ ! -f "$LOCAL_VERSION_FILE" ]]; then
@@ -55,15 +55,15 @@ function init_loading() {
 }
 
 function update_now() {
-  echo "🚀 Updating repository..."
-  git pull origin main
-
-  # 重新取得遠端版本
-  REMOTE_VERSION=$(curl -s "$REMOTE_VERSION_URL" | tr -d '\r')
-  if [[ -n "$REMOTE_VERSION" ]]; then
-    echo "$REMOTE_VERSION" > "$LOCAL_VERSION_FILE"
+  if [[ ! -f ./delux_update.sh ]]; then
+    echo "❌ delux_update.sh not found!"
+    exit 1
   fi
-  echo "✅ Update complete. Please run ./install.sh again."
+
+  chmod +x ./delux_update.sh
+  ./delux_update.sh
+
+  echo "Please run ./install.sh again."
   exit 0
 }
 
