@@ -3,9 +3,9 @@
 INIT_FLAG=".delux_init_done"
 LOCAL_VERSION_FILE=".delux_version"
 REMOTE_VERSION_URL="https://raw.githubusercontent.com/xStrikea/delux/refs/heads/main/bash/version.txt"
-DEFAULT_LOCAL_VERSION="0.3-bata"
+DEFAULT_LOCAL_VERSION="0.3"
 
-# 讀取本地版本（並移除雜字元）
+# 讀取版本
 function read_local_version() {
   if [[ -f "$LOCAL_VERSION_FILE" ]]; then
     cat "$LOCAL_VERSION_FILE" | tr -d '\r\n %'
@@ -14,7 +14,7 @@ function read_local_version() {
   fi
 }
 
-# 初始化進度條畫面
+# 初始化畫面
 function init_loading() {
   {
     echo "10"; echo "Checking dialog..."
@@ -42,22 +42,18 @@ function init_loading() {
   touch "$INIT_FLAG"
 }
 
-# 檢查更新
+# 檢查遠端版本
 function check_update() {
   LOCAL_VERSION=$(read_local_version)
+  UPDATE_AVAILABLE=0
+  UPDATE_MSG=""
 
   if command -v curl &> /dev/null; then
     REMOTE_VERSION=$(curl -s "$REMOTE_VERSION_URL" | tr -d '\r\n %')
     if [[ -n "$REMOTE_VERSION" && "$REMOTE_VERSION" != "$LOCAL_VERSION" ]]; then
-      UPDATE_MSG="🔔 New version available: v$REMOTE_VERSION"
+      UPDATE_MSG="🔔 New version available: $REMOTE_VERSION"
       UPDATE_AVAILABLE=1
-    else
-      UPDATE_MSG="✔ You are using the latest version: v$LOCAL_VERSION"
-      UPDATE_AVAILABLE=0
     fi
-  else
-    UPDATE_MSG="ℹ️ Could not check for updates (curl not installed)"
-    UPDATE_AVAILABLE=0
   fi
 }
 
@@ -79,7 +75,7 @@ function update_now() {
 cd "$(dirname "$0")"
 [[ ! -f "$INIT_FLAG" ]] && init_loading
 
-# 主要安裝選單
+# 主迴圈
 while true; do
   check_update
 
@@ -91,12 +87,12 @@ while true; do
   )
 
   if [[ $UPDATE_AVAILABLE -eq 1 ]]; then
-    OPTIONS+=(5 "Update Now")
+    OPTIONS+=(5 "Update to $REMOTE_VERSION")
   fi
 
   CHOICE=$(dialog --clear \
-    --title "Delux Installer v$LOCAL_VERSION" \
-    --menu "$UPDATE_MSG\nChoose your platform:" 14 60 6 \
+    --title "Delux Installer" \
+    --menu "${UPDATE_MSG}\nChoose your platform:" 14 60 6 \
     "${OPTIONS[@]}" \
     3>&1 1>&2 2>&3)
 
