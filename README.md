@@ -4,7 +4,8 @@
 
 # 🧾 Delux Terminal File Manager
 
-**Delux** is a lightweight, terminal-based file manager that runs on `dialog`. It supports interactive folder navigation, file operations, and script execution – all within a simple TUI (text user interface).
+**Delux** is a lightweight, terminal-based file manager that runs on `dialog`.  
+It supports interactive folder navigation, file operations, and script execution – all within a simple TUI (text user interface).
 
 ---
 
@@ -21,11 +22,11 @@
 
 ## 💻 Supported OS
 
-| OS         | Supported | Notes                         |
-|------------|-----------|-------------------------------|
-| 🐧 Linux    | ✅        | Works on most distributions   |
-| 🍎 macOS    | ✅        | Requires [Homebrew](https://brew.sh/) for `dialog` |
-| 📱 Termux   | ✅        | Fully compatible on Android   |
+| OS         | Supported | Notes                                                                 |
+|------------|-----------|-----------------------------------------------------------------------|
+| 🐧 Linux    | ✅         | Debian/Ubuntu/Fedora/Arch (Kernel 4.15+ recommended)                 |
+| 🍎 macOS    | ✅         | macOS 10.13 High Sierra and above (requires [Homebrew](https://brew.sh/)) |
+| 📱 Termux   | ✅         | Android 7.0 (Nougat) and above using Termux (v0.118+)               |
 
 ---
 
@@ -37,31 +38,34 @@
 ```bash
 sudo apt install dialog
 ```
-#### macOS (via Homebrew)
+macOS (via Homebrew)
 ```bash
 brew install dialog
 ```
-#### Termux
+Termux
 ```bash
 pkg install dialog
 ```
 
-## ⚙️ Clone and Run
-#### Linux
+---
+
+⚙️ Clone and Run
+
+Linux
 ```bash
 git clone https://github.com/xStrikea/delux.git
 cd delux/bash
 chmod +x delux_linux.sh
 ./delux_linux.sh
 ```
-#### MacOS
+macOS
 ```bash
 git clone https://github.com/xStrikea/delux.git
 cd delux/bash
 chmod +x delux_mac.sh
 ./delux_mac.sh
 ```
-#### Termux
+Termux
 ```bash
 git clone https://github.com/xStrikea/delux.git
 cd delux/bash
