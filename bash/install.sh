@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-DEFAULT_LOCAL_VERSION="0.3.2"
+DEFAULT_LOCAL_VERSION="0.3.3"
 LOCAL_VERSION_FILE=".delux_version"
 REMOTE_VERSION_URL="https://raw.githubusercontent.com/xStrikea/delux/refs/heads/main/bash/version.txt"
 INIT_FLAG=".delux_init_done"

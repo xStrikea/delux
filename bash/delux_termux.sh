@@ -1,76 +1,86 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
 
-CURRENT_DIR="$HOME"
-EDITOR_CMD="nano" 
+VERSION="0.3"
+AUTHOR="xStrikea"
+LICENSE_FILE="LICENSE.txt"
 
-function list_items() {
-  CHOICES=(".." "Go back")
-  for f in "$CURRENT_DIR"/.* "$CURRENT_DIR"/*; do
-    [ -e "$f" ] || continue
-    name=$(basename "$f")
-    [[ "$name" == "." || "$name" == ".." ]] && continue
-    CHOICES+=("$name" "")
+show_info() {
+  dialog --msgbox "Delux Terminal File Manager\n\nAuthor: $AUTHOR\nVersion: $VERSION\n\nLicense: GNU General Public License v3.0\n\nVisit: https://fsf.org/" 12 60
+}
+
+show_progress_delete() {
+  (for i in {1..100}; do echo $i; sleep 0.005; done) | \
+    dialog --gauge "Deleting file..." 8 40 0
+}
+
+browse_folder() {
+  local folder="$1"
+  while true; do
+    cd "$folder" || exit 1
+
+    local options=()
+    options+=(".." "Go back")
+    options+=("INFO" "About Delux")
+
+    for item in .* *; do
+      [[ "$item" == "." || "$item" == ".." ]] && continue
+      options+=("$item" "")
+    done
+
+    choice=$(dialog --clear --title "Delux File Manager (Termux)" \
+      --menu "Browsing: $folder" 20 60 14 \
+      "${options[@]}" \
+      3>&1 1>&2 2>&3)
+
+    [ $? -ne 0 ] && break
+
+    case "$choice" in
+      "..")
+        cd ..
+        folder=$(pwd)
+        ;;
+      "INFO")
+        show_info
+        ;;
+      *)
+        if [ -d "$choice" ]; then
+          folder="$folder/$choice"
+        else
+          action=$(dialog --title "$choice" \
+            --menu "Choose an action:" 15 50 5 \
+            1 "Open (edit or execute)" \
+            2 "Rename" \
+            3 "Delete" \
+            4 "Cancel" \
+            3>&1 1>&2 2>&3)
+
+          case "$action" in
+            1)
+              if [[ "$choice" == *.sh ]]; then
+                chmod +x "$choice"
+                bash "$choice"
+              else
+                dialog --textbox "$choice" 20 60
+              fi
+              ;;
+            2)
+              new_name=$(dialog --inputbox "Enter new name:" 8 40 "$choice" 3>&1 1>&2 2>&3)
+              [ -n "$new_name" ] && mv "$choice" "$new_name"
+              ;;
+            3)
+              show_progress_delete
+              rm -rf "$choice"
+              ;;
+          esac
+        fi
+        ;;
+    esac
   done
-
-  dialog --title "delux - $CURRENT_DIR" \
-         --menu "Select a file or folder:" 20 60 15 \
-         "${CHOICES[@]}" 2>choice.txt
-
-  RESULT=$?
-  CHOICE=$(<choice.txt)
-  rm -f choice.txt
-  [[ $RESULT -ne 0 ]] && exit
 }
 
-function file_actions() {
-  FILE="$CURRENT_DIR/$1"
-  EXT="${1##*.}"
+if ! command -v dialog &> /dev/null; then
+  echo "❌ 'dialog' is not installed."
+  exit 1
+fi
 
-  TYPE="file"
-  case "$EXT" in
-    mp3|wav|mp4|mov|jpg|png|gif|webp) TYPE="media" ;;
-    sh) TYPE="shell" ;;
-    bin|exe|run|app) TYPE="executable" ;;
-  esac
-
-  case "$TYPE" in
-    media)
-      dialog --menu "Choose action for $1" 10 40 2 1 "Delete" 2 "Rename" 2>action.txt ;;
-    executable)
-      dialog --yesno "Are you sure you want to delete $1?" 7 40 || return
-      dialog --menu "Choose action for $1" 10 40 2 1 "Delete" 2 "Rename" 2>action.txt ;;
-    shell)
-      dialog --menu "Choose action for $1" 10 40 4 \
-        1 "Delete" 2 "Edit" 3 "Rename" 4 "Open/Run" 2>action.txt ;;
-    *)
-      dialog --menu "Choose action for $1" 10 40 3 \
-        1 "Delete" 2 "Edit" 3 "Rename" 2>action.txt ;;
-  esac
-
-  ACTION=$(<action.txt); rm -f action.txt
-  case "$ACTION" in
-    1) rm "$FILE" ;;
-    2) $EDITOR_CMD "$FILE" ;;
-    3)
-      NEWNAME=$(dialog --inputbox "New name:" 8 40 "$1" 3>&1 1>&2 2>&3)
-      [[ -n "$NEWNAME" ]] && mv "$FILE" "$CURRENT_DIR/$NEWNAME"
-      ;;
-    4)
-      chmod +x "$FILE"
-      "$FILE"
-      ;;
-  esac
-}
-
-while true; do
-  list_items
-  TARGET="$CHOICE"
-  TARGET_PATH="$CURRENT_DIR/$TARGET"
-  if [[ "$TARGET" == ".." || "$TARGET" == "Go back" ]]; then
-    CURRENT_DIR=$(dirname "$CURRENT_DIR")
-  elif [[ -d "$TARGET_PATH" ]]; then
-    CURRENT_DIR="$TARGET_PATH"
-  elif [[ -f "$TARGET_PATH" ]]; then
-    file_actions "$TARGET"
-  fi
-done
+browse_folder "$(pwd)"
