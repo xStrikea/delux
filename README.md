@@ -141,7 +141,7 @@ delux_termux.sh
 
 delux_ssh.sh
 
-delux_win.sh
+delux_win.py
 
 
 
