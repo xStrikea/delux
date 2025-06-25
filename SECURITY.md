@@ -17,7 +17,7 @@ If you discover a security vulnerability in **Delux**, please **do not** open a 
 
 Instead, contact us **privately**:
 
-- 📧 Email: `xstrikea.sec@protonmail.com`
+- 📧 Email: `coder4819@gmail.com`
 - 📩 GitHub Direct Message (if applicable)
 
 Please include:
