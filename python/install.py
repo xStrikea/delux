@@ -6,8 +6,8 @@ VERSION = "0.3.4"
 
 def run_script(choice):
     scripts = {
-        "1": ["python3", "delux/python/delux_win.py"],
-        "2": ["python3", "delux/python/dev/delux_dev.py"]
+        "1": ["python3", "delux_win.py"],
+        "2": ["python3", "dev/delux_dev.py"]
     }
 
     if choice in scripts:

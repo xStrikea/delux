@@ -13,11 +13,11 @@ function init_loading() {
 
 function run_script() {
   case "$1" in
-    1) SCRIPT="delux/bash/delux_mac.sh" ;;
-    2) SCRIPT="delux/bash/delux_linux.sh" ;;
-    3) SCRIPT="delux/bash/delux_termux.sh" ;;
-    4) SCRIPT="delux/bash/delux_ssh.sh" ;;
-    5) SCRIPT="delux/bash/dev/delux_dev.sh" ;;
+    1) SCRIPT="delux_mac.sh" ;;
+    2) SCRIPT="delux_linux.sh" ;;
+    3) SCRIPT="delux_termux.sh" ;;
+    4) SCRIPT="delux_ssh.sh" ;;
+    5) SCRIPT="dev/delux_dev.sh" ;;
     *) echo "❌ Invalid selection."; exit 1 ;;
   esac
 
