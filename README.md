@@ -68,7 +68,7 @@ chmod +x install.sh
 Windows
 ```
 git clone https://github.com/xStrikea/delux.git
-cd delux
+cd delux/python
 python install.py
 ```
 > ℹ️ After first run, install.sh / install.py remembers the initialization and skips it on next run.
@@ -117,7 +117,7 @@ Windows
 cd %USERPROFILE%
 rm -r delux
 git clone https://github.com/xStrikea/delux.git
-cd delux
+cd delux/python
 python install.py
 
 ```
@@ -131,7 +131,7 @@ Windows uses Python 3.x for installation and running.
 
 SSH mode provides a simplified CLI for remote server use.
 
-All platform scripts are in /bash:
+All platform scripts are in /bash or /python:
 
 delux_linux.sh
 
@@ -140,6 +140,8 @@ delux_mac.sh
 delux_termux.sh
 
 delux_ssh.sh
+
+delux_win.sh
 
 
 
