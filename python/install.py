@@ -2,7 +2,7 @@
 
 import os import subprocess
 
-OPTIONS = { "1": ("Launch Delux File Manager", "delux_windows.py"), "2": ("Developer Tool (delux_dev)", "dev/delux_dev.py"), "3": ("Exit", None) }
+OPTIONS = { "1": ("Launch Delux File Manager", "delux_win.py"), "2": ("Developer Tool (delux_dev)", "dev/delux_dev.py"), "3": ("Exit", None) }
 
 def display_menu(): print("\n===== Delux Installer (Windows) =====") for key, (desc, _) in OPTIONS.items(): print(f"{key}. {desc}")
 
