@@ -1,42 +1,87 @@
 #!/usr/bin/env bash
 
-LOCAL_VERSION="0.3.4"
-INIT_FLAG=".delux_init_done"
+cd "$(dirname "$0")"
 
-function init_loading() {
-  if [[ ! -f "$INIT_FLAG" ]]; then
-    echo "🔧 Initializing..."
-    sleep 1
-    touch "$INIT_FLAG"
+INIT_FLAG=".delux_init_done"
+LOCAL_VERSION_FILE=".delux_version"
+REMOTE_VERSION_URL="https://raw.githubusercontent.com/xStrikea/delux/refs/heads/main/bash/version.txt"
+DEFAULT_LOCAL_VERSION="0.3.5"
+
+# 讀取版本
+function read_local_version() {
+  if [[ -f "$LOCAL_VERSION_FILE" ]]; then
+    cat "$LOCAL_VERSION_FILE" | tr -d '\r\n %'
+  else
+    echo "$DEFAULT_LOCAL_VERSION"
   fi
 }
 
-function run_script() {
-  case "$1" in
-    1) SCRIPT="delux_mac.sh" ;;
-    2) SCRIPT="delux_linux.sh" ;;
-    3) SCRIPT="delux_termux.sh" ;;
-    4) SCRIPT="delux_ssh.sh" ;;
-    5) SCRIPT="dev/delux_dev.sh" ;;
-    *) echo "❌ Invalid selection."; exit 1 ;;
-  esac
+# 初始化畫面
+function init_loading() {
+  {
+    echo "10"; echo "Checking dialog..."
+    sleep 1
 
-  chmod +x "$SCRIPT"
-  "$SCRIPT"
+    if ! command -v dialog &> /dev/null; then
+      echo "100"; echo "Dialog not installed. Please install it."
+      sleep 2
+      clear
+      echo "❌ 'dialog' is not installed. Please install it first."
+      exit 1
+    fi
+
+    echo "40"; echo "Setting up..."
+    sleep 1
+
+    echo "70"; echo "Preparing Delux..."
+    sleep 1
+
+    echo "100"; echo "Initialization complete."
+    sleep 1
+  } | dialog --title "Delux Installer" --gauge "Initializing, please wait..." 10 60 0
+
+  touch "$INIT_FLAG"
 }
 
-init_loading
+# 執行腳本
+function run_script() {
+  chmod +x "$1"
+  clear
+  echo "🚀 Running $1..."
+  "$1"
+}
+
+# 執行 Python 腳本
+function run_python() {
+  clear
+  echo "🚀 Running Python Dev version..."
+  python3 "$1"
+}
+
+# === 執行 ===
+
+[[ ! -f "$INIT_FLAG" ]] && init_loading
+
+LOCAL_VERSION=$(read_local_version)
 
 while true; do
-  CHOICE=$(dialog --clear --title "Delux Installer (v$LOCAL_VERSION)" --menu "Select platform:" 15 50 8 \
+  CHOICE=$(dialog --clear \
+    --title "Delux Installer v$LOCAL_VERSION" \
+    --menu "Choose your platform or developer tool:" 18 60 10 \
     1 "macOS" \
     2 "Linux" \
     3 "Termux (Android)" \
-    4 "SSH" \
-    5 "Developer Mode (Bash)" \
+    4 "SSH (Remote Login)" \
+    5 "Developer (SH)" \
+    6 "Exit" \
     3>&1 1>&2 2>&3)
 
-  clear
-  run_script "$CHOICE"
-  break
+  case "$CHOICE" in
+    1) run_script "../delux/bash/delux_mac.sh"; break ;;
+    2) run_script "../delux/bash/delux_linux.sh"; break ;;
+    3) run_script "../delux/bash/delux_termux.sh"; break ;;
+    4) run_script "../delux/bash/delux_ssh.sh"; break ;;
+    5) run_script "../delux/bash/dev/delux_dev.sh"; break ;;
+    6|*) clear; echo "Goodbye!"; exit 0 ;;
+  esac
 done

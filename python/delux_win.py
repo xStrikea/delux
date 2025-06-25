@@ -1,6 +1,6 @@
 import os import sys import shutil import subprocess
 
-VERSION = "0.3.4" AUTHOR = "xStrikea" LICENSE = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
+VERSION = "0.3.5" AUTHOR = "xStrikea" LICENSE = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
 
 START_PATH = os.path.expanduser("~")
 
