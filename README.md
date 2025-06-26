@@ -92,7 +92,7 @@ git clone https://github.com/xStrikea/delux.git
 cd delux/bash
 chmod +x install.sh
 ./install.sh
-``
+```
 ---
 
 🧠 Notes
