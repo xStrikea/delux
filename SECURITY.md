@@ -6,8 +6,8 @@ We commit to maintaining the security of **Delux** on the following platforms:
 
 | Version      | Supported          |
 |--------------|--------------------|
-| 0.3.4 (Latest) | ✅ Active support |
-| < 0.3.4      | ❌ Stop running |
+| 0.3.5 (Latest) | ✅ Active support |
+| < 0.3.5      | ❌ Stop running |
 
 ---
 
