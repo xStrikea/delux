@@ -54,4 +54,4 @@ Delux is provided **as-is**, with **no warranty** for any damage, loss of data, 
 
 ---
 
-_Last updated: 2025-06-25_
+_Last updated: 2025-06-28 τ_
