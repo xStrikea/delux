@@ -37,7 +37,7 @@ We aim to respond **within 72 hours**.
 - Do **not** execute unverified `.sh` files
 - Ensure dependencies (`dialog`, `bash`) are installed from official sources
 - SSH usage: Avoid running as `root` unless necessary
-- Windows (python) `Stopped running due to a bug.``
+- Windows (python) `Stopped running due to a bug.`
 
 ---
 
