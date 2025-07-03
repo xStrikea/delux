@@ -37,7 +37,7 @@ We aim to respond **within 72 hours**.
 - Do **not** execute unverified `.sh` files
 - Ensure dependencies (`dialog`, `bash`) are installed from official sources
 - SSH usage: Avoid running as `root` unless necessary
-- Windows (Python version): Validate `install.py` before use
+- Windows (python) `Stopped running due to a bug.``
 
 ---
 
@@ -54,4 +54,4 @@ Delux is provided **as-is**, with **no warranty** for any damage, loss of data, 
 
 ---
 
-_Last updated: 2025-06-28 τ_
+_Last updated: 2025-07-03_
