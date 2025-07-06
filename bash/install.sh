@@ -72,8 +72,7 @@ while true; do
     2 "Linux" \
     3 "Termux (Android)" \
     4 "SSH (Remote Login)" \
-    5 "Developer (SH)" \
-    6 "Exit" \
+    5 "Exit" \
     3>&1 1>&2 2>&3)
 
   case "$CHOICE" in
@@ -81,7 +80,6 @@ while true; do
     2) run_script "./delux_linux.sh"; break ;;
     3) run_script "./delux_termux.sh"; break ;;
     4) run_script "./delux_ssh.sh"; break ;;
-    5) run_script "./dev/delux_dev.sh"; break ;;
-    6|*) clear; echo "Goodbye!"; exit 0 ;;
+    5|*) clear; echo "Goodbye!"; exit 0 ;;
   esac
 done
